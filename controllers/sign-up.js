@@ -18,7 +18,7 @@ exports.postLogin = async (req,res,next)=>{
         res.status(404).json({remarks: remarks})
     }else if(user[0].password!==password){
         const remarks= 'Incorrect password'
-        res.status(404).json({remarks: remarks})
+        res.status(401).json({remarks: remarks})
     }else{
         const remarks= 'Logged in'
         res.status(201).json({remarks: remarks})
