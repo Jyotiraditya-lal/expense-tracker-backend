@@ -27,7 +27,6 @@
         bttn.addEventListener("click", async function login(e){
             
             e.preventDefault()
-            console.log('login process started')
             try{
                 const email=document.getElementById('Email').value;
                 const password=document.getElementById('password').value 
@@ -42,11 +41,9 @@
                         'Content-Type': 'application/json' 
                     }
                 })
-                console.log('response came')
                 const data= await response.json()
                 if(data && data.remarks){
                     alert(data.remarks)
-                    console.log(data.remarks)
                 }
             }catch(err){
                 console.log(err)

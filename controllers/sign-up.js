@@ -18,12 +18,17 @@ exports.postLogin = async (req,res,next)=>{
         res.status(404).json({remarks: remarks})
     }else if(user.length >0){
         bcrypt.compare(password,user[0].password,(err,response)=>{
-            if(!err){
+            if(err){
+                const remarks= 'Something went wrong'
+               res.status(500).json({remarks: remarks }) 
+            }
+            if(response===true) {
                 const remarks= 'Logged in'
                 res.status(201).json({remarks: remarks})
+                
             }else{
                 const remarks= 'Incorrect password'
-        res.status(401).json({remarks: remarks})
+                res.status(401).json({remarks: remarks})
             }
         })
     }
