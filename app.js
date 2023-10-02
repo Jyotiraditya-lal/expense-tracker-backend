@@ -1,7 +1,8 @@
 const bodyParser = require('body-parser')
 const path=require('path')
 const express= require('express')
-const signUp=require('./sign-up')
+const signUp=require('./routes/sign-up')
+const expense= require('./routes/expense')
 const sequelize=require('./util/database')
 
 const app=express()
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(signUp)
+app.use('/expense',expense)
 
 sequelize.sync().then(result=>{
     app.listen(3000)

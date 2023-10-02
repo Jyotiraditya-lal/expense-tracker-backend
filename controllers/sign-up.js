@@ -23,8 +23,8 @@ exports.postLogin = async (req,res,next)=>{
                res.status(500).json({remarks: remarks }) 
             }
             if(response===true) {
-                const remarks= 'Logged in'
-                res.status(201).json({remarks: remarks})
+                
+                res.status(201).redirect('/expense/addexpense')
                 
             }else{
                 const remarks= 'Incorrect password'

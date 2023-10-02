@@ -1,5 +1,5 @@
 const express=require('express')
-const signUp= require('./controllers/sign-up')
+const signUp= require('../controllers/sign-up')
 const router= express.Router()
 
 router.get('/',signUp.getLogin)

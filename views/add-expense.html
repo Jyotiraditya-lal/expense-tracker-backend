@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense</title>
+    <link rel="stylesheet" href="/add-expense.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Add Expense</h1>
+    </header>
+    <main>
+        <form action="/expense/addexpense" method="POST">
+            <div class="form-control">
+                <label>Money spent(in Rs):</label>
+                <input id="amount" type="number" name="amount" required />
+                <label>Item description:</label>
+                <input id="description" type="text" name="description" required />
+                <label for="category">Category:</label>
+                <select name="category" id="category">
+                    <option value="food">Food</option>
+                    <option value="petrol">Petrol</option>
+                    <option value="movie">Movies</option>
+                    <option value="ticket">Flight tickets</option>
+                </select>
+                <button type="submit">Add Expense</button>
+            </div>
+        </form>
+        
+        <ul id="expenses"></ul>
+    </main>
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+            
+                const res = await fetch('http://localhost:3000/expense/fetchexpenses');
+                const data = await res.json();
+                console.log(data);
+                if (data && data.allexpenses) {
+                    data.allexpenses.forEach(expense => {
+                        showExpense(expense);
+                    });
+                } else {
+                    throw new Error('Something went wrong');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        function showExpense(expense) {
+            const ul = document.getElementById('expenses');
+            const bttn = document.createElement('button');
+            bttn.id = 'del';
+            bttn.textContent = 'Delete';
+            const li = document.createElement('li');
+            li.id = expense.id;
+            li.textContent = `Expense: ${expense.description}; Category: ${expense.category}; Money spent: ${expense.amount}`;
+            li.appendChild(bttn);
+            ul.appendChild(li); 
+            bttn.addEventListener('click', () => { deleteExpense(expense.id)});
+        }
+        async function deleteExpense(id){
+            console.log(`Delete button clicked for expense with ID: ${id}`);
+            const ul=  document.getElementById('expenses');
+            const response= await fetch(`http://localhost:3000/expense/deleteexpense/${id}`,{method: 'DELETE'})
+            const data= await response.json()
+            if (data.success) {
+                const li = document.getElementById(id);
+                ul.removeChild(li);
+            }
+        }
+    </script>
+</body>
+</html>
