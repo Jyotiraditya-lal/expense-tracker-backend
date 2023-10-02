@@ -11,7 +11,7 @@
         <h1>Add Expense</h1>
     </header>
     <main>
-        <form action="/expense/addexpense" method="POST">
+        <form action="/expense/addexpense" method="POST" onsubmit="AddExpense(event)">
             <div class="form-control">
                 <label>Money spent(in Rs):</label>
                 <input id="amount" type="number" name="amount" required />
@@ -24,17 +24,39 @@
                     <option value="movie">Movies</option>
                     <option value="ticket">Flight tickets</option>
                 </select>
-                <button type="submit">Add Expense</button>
+                <button id="add-bttn" type="submit">Add Expense</button>
             </div>
         </form>
         
         <ul id="expenses"></ul>
     </main>
     <script>
+        const bttn=document.getElementById('add-bttn')
+        bttn.addEventListener('click', async function AddExpense(e){
+            e.preventDefault()
+            try{
+                const amount= document.getElementById('amount').value
+                const description= document.getElementById('description').value
+                const category= document.getElementById('category').value
+                const res = await fetch('http://localhost:3000/expense/addexpense',{
+                    method: 'POST',
+                    body: JSON.stringify({
+                        amount,
+                        description,
+                        category
+                    }),
+                    headers: {'Authentication': token} });
+                    if(res.ok){
+                        alert('new Expense added')
+                    }
+            }catch(err){
+                console.log(err)
+            }
+        })
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-            
-                const res = await fetch('http://localhost:3000/expense/fetchexpenses');
+                const token= localStorage.getItem('token')
+                const res = await fetch('http://localhost:3000/expense/fetchexpenses',{headers: {'Authentication': token} });
                 const data = await res.json();
                 console.log(data);
                 if (data && data.allexpenses) {

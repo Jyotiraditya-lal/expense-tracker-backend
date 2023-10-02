@@ -2,10 +2,15 @@ const path=require('path')
 const rootDir= require('../util/path')
 const User= require ('../models/user')
 const bcrypt= require('bcrypt')
+const jst=require('jsonwebtoken')
 
 
 exports.getLogin = (req,res,next)=>{
     res.sendFile(path.join(rootDir, 'views', 'login.html'))
+}
+
+function generateToken(id){
+    return jst.sign({userId: id},'9abr8ytd3554bfndjjw5745bngfj985') //do not push it to git or disclose it to others when working in development.
 }
 
 exports.postLogin = async (req,res,next)=>{
@@ -24,7 +29,7 @@ exports.postLogin = async (req,res,next)=>{
             }
             if(response===true) {
                 const remarks= 'Logged in'
-                res.status(201).json({success: true, remarks: remarks})
+                res.status(201).json({success: true, remarks: remarks, token: generateToken(user[0].id)})
                 
             }else{
                 const remarks= 'Incorrect password'

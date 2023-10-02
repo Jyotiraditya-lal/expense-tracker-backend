@@ -11,16 +11,19 @@ exports.postExpense = async (req,res,next) => {
     const amount= req.body.amount;
     const description = req.body.description;
     const category= req.body.category
+    const Id= req.user.id
     await Expense.create({
-        amount,
-        description,
-        category
+        amount: amount,
+        description: description,
+        category: category,
+        userId: Id
     })
     res.redirect('/expense/addexpense')
 }
 
 exports.getExpenseData = async (req,res,next)=>{
-    const expenses= await Expense.findAll()
+    const Id= req.user.id
+    const expenses= await Expense.findAll({where: {userId: Id}})
     res.status(201).json({allexpenses: expenses})
 }
 
