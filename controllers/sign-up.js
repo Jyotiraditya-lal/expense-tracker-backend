@@ -15,20 +15,20 @@ exports.postLogin = async (req,res,next)=>{
     const user= await User.findAll({where: {email: email}})
     if(user.length===0){
         const remarks= 'User does not exist'
-        res.status(404).json({remarks: remarks})
+        res.status(404).json({success: false, remarks: remarks})
     }else if(user.length >0){
         bcrypt.compare(password,user[0].password,(err,response)=>{
             if(err){
                 const remarks= 'Something went wrong'
-               res.status(500).json({remarks: remarks }) 
+               res.status(500).json({success: false, remarks: remarks }) 
             }
             if(response===true) {
-                
-                res.status(201).redirect('/expense/addexpense')
+                const remarks= 'Logged in'
+                res.status(201).json({success: true, remarks: remarks})
                 
             }else{
                 const remarks= 'Incorrect password'
-                res.status(401).json({remarks: remarks})
+                res.status(401).json({success: false, remarks: remarks})
             }
         })
     }
@@ -36,7 +36,7 @@ exports.postLogin = async (req,res,next)=>{
 }
 
 exports.getSignUp = (req,res,next)=>{
-    res.sendFile(path.join(rootDir, 'views', 'sign-up.html'))
+    res.sendFile(path.join(rootDir, 'views',  'sign-up.html'))
 }
 
 exports.postSignUp = async (req,res,next)=>{
@@ -51,10 +51,11 @@ exports.postSignUp = async (req,res,next)=>{
                 email: email,
                 password: hash
             })
-            res.status(201).send('New User Created')
+            
+            res.status(201).json({remarks: 'New User Created'})
         })      
     }else{
-        res.status(404).send('User already exists')
+        res.status(404).json({remarks: 'User already exists'})
     }
     
 }
