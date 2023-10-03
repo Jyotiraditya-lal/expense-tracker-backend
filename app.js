@@ -3,9 +3,11 @@ const path=require('path')
 const express= require('express')
 const signUp=require('./routes/sign-up')
 const expense= require('./routes/expense')
+const payment=require('./routes/purchase')
 const sequelize=require('./util/database')
 const Expense= require('./models/expense')
 const User = require('./models/user')
+const Order= require('./models/order')
 
 const app=express()
 
@@ -18,9 +20,14 @@ app.use(express.static(path.join(__dirname, 'views')))
 
 app.use(signUp)
 app.use('/expense',expense)
+app.use('/payment',payment)
 
 User.hasMany(Expense)
 Expense.belongsTo(User)
+
+User.hasMany(Order)
+Order.belongsTo(User)
+
 
 sequelize.sync().then(result=>{
     app.listen(3000)
