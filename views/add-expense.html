@@ -33,39 +33,61 @@
         <ul id="expenses"></ul>
     </main>
     <script>
-        document.getElementById('payment').addEventListener('click', async function payment(e){
-            try{
-                const token= localStorage.getItem('token')
-                const response= await fetch('http://localhost:3000/payment/transactions',{
-                    headers: {
-                        'Authorization': token,
-                        'Content-Type': 'application/json',
-                    }
-                })
-                const data= await response.json()
-                var options={
-                    "key": data.key_id,
-                    "order_id": data.orderid,
-                    "headers": async function update(response){
-                        await fetch('http://localhost:3000/payment/updatetransactions',{
-                            method: 'POST',
-                            body: JSON.stringify({
-                                order_id: options.order_id,
-                                payment_id: response.razorpay_payment_id
-                            }),
-                            headers: {
-                               'Authorization': token,
-                               'Content-Type': 'application/json',
-                            }
-                            
-                        })
-                        alert('You are a premium user')
-                    }
+        const paymentBtn = document.getElementById('payment');
+        paymentBtn.addEventListener('click', async function handlePayment(e) {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3000/payment/transactions', {
+                headers: {
+                    'Authorization': token,
                 }
-            }catch (err){
-                console.log(err)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch payment data');
             }
-        })
+
+            const data = await response.json();
+
+            var options = {
+                key: data.key_id,
+                currency: 'INR',
+                order_id: data.orderid,
+                name: 'Expense Tracker',
+                description: 'Premium Subscription',
+                handler: async function (response) {
+                    const paymentResponse = await fetch('http://localhost:3000/payment/updatetransactions', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            order_id: response.razorpay_order_id,
+                            payment_id: response.razorpay_payment_id
+                        }),
+                        headers: {
+                            'Authorization': token,
+                            'Content-Type': 'application/json',
+                        }
+                    });
+
+                    if (!paymentResponse.ok) {
+                        throw new Error('Payment confirmation failed');
+                    }
+
+                    alert('You are a premium user');
+                },
+                prefill: {
+                    name: 'Your Name',
+                    email: 'your@email.com',
+                    contact: '1234567890'
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } catch (err) {
+            console.error(err);
+            // Handle and display the error to the user if necessary
+        }
+    })
         const bttn=document.getElementById('add-bttn')
         bttn.addEventListener('click', async function AddExpense(e){
             e.preventDefault()
