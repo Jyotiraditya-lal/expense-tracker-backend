@@ -2,18 +2,17 @@ const path=require('path')
 const rootDir= require('../util/path')
 const User= require ('../models/user')
 const bcrypt= require('bcrypt')
-const jst=require('jsonwebtoken')
+const jwt=require('jsonwebtoken')
 
 
-exports.getLogin = (req,res,next)=>{
+const getLogin = (req,res,next)=>{
     res.sendFile(path.join(rootDir, 'views', 'login.html'))
 }
-
-function generateToken(id){
-    return jst.sign({userId: id},'9abr8ytd3554bfndjjw5745bngfj985') //do not push it to git or disclose it to others when working in development.
+function generateToken(id,name,isPremium){
+    return jwt.sign({userId: id,name: name, isPremium: isPremium },'9abr8ytd3554bfndjjw5745bngfj985') //do not push it to git or disclose it to others when working in development.
 }
 
-exports.postLogin = async (req,res,next)=>{
+const postLogin = async (req,res,next)=>{
 
     const email= req.body.email;
     const password= req.body.password;
@@ -29,7 +28,7 @@ exports.postLogin = async (req,res,next)=>{
             }
             if(response===true) {
                 const remarks= 'Logged in'
-                res.status(201).json({success: true, remarks: remarks, token: generateToken(user[0].id)})
+                res.status(201).json({success: true, remarks: remarks, token: generateToken(user[0].id,user[0].name,user[0].isPremium)})
                 
             }else{
                 const remarks= 'Incorrect password'
@@ -40,11 +39,11 @@ exports.postLogin = async (req,res,next)=>{
      
 }
 
-exports.getSignUp = (req,res,next)=>{
+const getSignUp = (req,res,next)=>{
     res.sendFile(path.join(rootDir, 'views',  'sign-up.html'))
 }
 
-exports.postSignUp = async (req,res,next)=>{
+const postSignUp = async (req,res,next)=>{
     const name= req.body.name;
     const email= req.body.email;
     const password= req.body.password
@@ -64,3 +63,12 @@ exports.postSignUp = async (req,res,next)=>{
     }
     
 }
+
+module.exports={
+    getLogin,
+    generateToken,
+    postLogin,
+    getSignUp,
+    postSignUp
+}
+

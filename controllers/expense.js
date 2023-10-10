@@ -1,6 +1,5 @@
 const path=require('path')
 const rootDir= require('../util/path')
-const User= require ('../models/user')
 const Expense= require('../models/expense')
 
 exports.getExpense = (req, res, next) => {

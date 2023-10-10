@@ -16,7 +16,7 @@ const authenticate = (req, res, next) => {
                     return res.status(404).json({ remarks: 'User not found' });
                 }
                 req.user = user;
-                console.log(req.user);
+                
                 next();
             })
             .catch((err) => {

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="../css/leaderboard.css">
+</head>
+<body>
+    <header class="main-header">
+        <h1>Leaderboard</h1>
+        <button class="logout" id="logout">Logout</button>
+    </header>
+    <main>
+        <nav class="main-header__nav">
+            <ul class="main-header__item-list">
+                <li class="main-header__item"><a href="/expense/addexpense">Add Expense</a></li>
+                <li class="main-header__item"><a href="/premium/leaderboard">Leaderboard</a></li>
+            </ul>
+        </nav>
+        <ul id="leaderboard" class="leaderboard"></ul>
+    </main>
+    <script>
+        window.addEventListener('DOMContentLoaded', async ()=>{
+            try{
+                const response= await fetch('http://localhost:3000/premium/leaderboard/rankings')
+                if(!response.ok){
+                    throw new Error('Could not fetch user rankings')
+                }
+                const data= await response.json()
+                data.forEach(user => {
+                    const li= document.createElement('li')
+                    li.className='ranks'
+                    li.textContent= `Name- ${user.name}  Total Expense- ${user.total_expense}`
+                    document.getElementById('leaderboard').appendChild(li)
+                });
+            }catch(err){}
+        })
+    </script>
+</body>
+</html>
