@@ -91,7 +91,6 @@ button#del:hover {
     background-color: #555;   
 }
 
-/* Logout Button Styles */
 button.logout {
     background-color: #333;
     color: #fff;

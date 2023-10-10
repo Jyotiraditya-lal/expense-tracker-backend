@@ -15,7 +15,7 @@
         <nav class="main-header__nav">
             <ul class="main-header__item-list">
                 <li class="main-header__item"><a href="/expense/addexpense">Add Expense</a></li>
-                <li class="main-header__item"><a href="/premium/leaderboard">Leaderboard</a></li>
+                <li class="main-header__item" id="leaderboard" style="visibility: hidden;"><a href="/premium/leaderboard">Leaderboard</a></li>
             </ul>
         </nav>
         <form action="/expense/addexpense" method="POST" onsubmit="AddExpense(event)">
@@ -46,6 +46,7 @@
             const p=document.createElement('p')
             p.textContent= 'You are a premium user now'
             document.getElementById('message').appendChild(p)
+            document.getElementById('leaderboard').style.visibility= 'visible'
         }
 
         const paymentBtn = document.getElementById('payment');
@@ -92,6 +93,7 @@
                     alert('You are a premium user');
                     localStorage.setItem('token',paymentResponse.data.token)
                     showPremiumMessage()
+                    
 
                 },
                 prefill: {
@@ -134,7 +136,7 @@
         }catch(err){
             console.log(err)
         }
-        window.location.href='./add-expense.html'
+        window.location.href='./addexpense'
     })
     function parseJwt (token) {
         var base64Url = token.split('.')[1];
@@ -180,7 +182,7 @@
         bttn.textContent = 'Delete';
         const li = document.createElement('li');
         li.id = expense.id;
-        li.textContent = `Expense: ${expense.description}; Category: ${expense.category}; Money spent: ${expense.amount}`;
+        li.textContent = `Expense: ${expense.description}; Category: ${expense.category}; Money spent: Rs ${expense.amount}`;
         li.appendChild(bttn);
         ul.appendChild(li); 
         bttn.addEventListener('click', () => { deleteExpense(expense.id)});
@@ -207,7 +209,7 @@
     logout.addEventListener('click', function Logout(e){
         e.preventDefault()
         localStorage.removeItem('token')
-        window.location.href='../login.html'
+        window.location.href='/'
     })
     </script>
 </body>

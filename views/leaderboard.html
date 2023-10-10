@@ -31,10 +31,18 @@
                 data.forEach(user => {
                     const li= document.createElement('li')
                     li.className='ranks'
-                    li.textContent= `Name- ${user.name}  Total Expense- ${user.total_expense}`
+                    li.textContent= `Name: ${user.name} ; Total Expense: Rs ${user.total_expense}`
                     document.getElementById('leaderboard').appendChild(li)
                 });
-            }catch(err){}
+            }catch(err){
+                alert(err)
+            }
+        })
+        const logout= document.getElementById('logout')
+        logout.addEventListener('click', function Logout(e){
+            e.preventDefault()
+            localStorage.removeItem('token')
+            window.location.href='/'
         })
     </script>
 </body>

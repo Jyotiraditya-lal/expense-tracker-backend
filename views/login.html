@@ -47,7 +47,7 @@
                 }
                 if(data.success===true){
                     localStorage.setItem('token',data.token)
-                    window.location.href='./add-expense.html'
+                    window.location.href='./expense/addexpense'
                 }
             }catch(err){
                 console.log(err)
@@ -57,7 +57,7 @@
         const button=document.getElementById('signup')
         button.addEventListener('click', function signup(e){
             e.preventDefault()
-            window.location.href='./sign-up.html'
+            window.location.href='./user'
         })
     </script>
 </body>

@@ -10,22 +10,19 @@ const getLeaderboard= (req,res,next)=>{
 
 const getRanking= async (req,res,next) =>{
     try{
-        const users= await User.findAll()
-        const expenses= await Expense.findAll()
-        const userExpenses= {}
-        expenses.forEach(expense => {
-            if(userExpenses[expense.userId]){
-                userExpenses[expense.userId]+=expense.amount
-            }else{
-                userExpenses[expense.userId]=expense.amount
-            }
-        });
-        var userDetails=[]
-        users.forEach((user)=>{
-            userDetails.push({name: user.name, total_expense: userExpenses[user.id]|| 0})
+        const users= await User.findAll({
+            attributes: ['id','name',[sequelize.fn('sum', sequelize.col('expenses.amount')),'total_expense']],
+            include: [
+                {
+                    model: Expense,
+                    attributes: []
+                }
+            ],
+            group: ['users.id'],
+            order: [['total_expense',"DESC"]]
         })
-        userDetails.sort((a,b)=> b.total_expense - a.total_expense)
-        res.status(200).json(userDetails)
+        
+        res.status(200).json(users)
     }catch(err){}
 }
 
