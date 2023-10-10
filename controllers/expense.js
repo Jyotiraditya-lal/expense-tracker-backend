@@ -1,5 +1,6 @@
 const path=require('path')
 const rootDir= require('../util/path')
+const User= require('../models/user')
 const Expense= require('../models/expense')
 
 exports.getExpense = (req, res, next) => {
@@ -12,6 +13,13 @@ exports.postExpense = async (req,res,next) => {
         const description = req.body.description;
         const category= req.body.category
         const Id= req.user.id
+        const user= await  User.findByPk(Id)
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const currentTotalExpense = user.totalExpense || 0;
+        const newTotalExpense = currentTotalExpense + amount;
+        await user.update({ totalExpense: newTotalExpense })
         await Expense.create({
             amount: amount,
             description: description,

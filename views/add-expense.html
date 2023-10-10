@@ -91,7 +91,8 @@
                     }
 
                     alert('You are a premium user');
-                    localStorage.setItem('token',paymentResponse.data.token)
+                    const Data= await paymentResponse.json()
+                    localStorage.setItem('token',Data.token)
                     showPremiumMessage()
                     
 

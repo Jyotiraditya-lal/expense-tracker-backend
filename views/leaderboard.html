@@ -31,7 +31,7 @@
                 data.forEach(user => {
                     const li= document.createElement('li')
                     li.className='ranks'
-                    li.textContent= `Name: ${user.name} ; Total Expense: Rs ${user.total_expense}`
+                    li.textContent= `Name: ${user.name} ; Total Expense: Rs ${user.totalExpense}`
                     document.getElementById('leaderboard').appendChild(li)
                 });
             }catch(err){

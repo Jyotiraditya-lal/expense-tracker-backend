@@ -11,17 +11,10 @@ const getLeaderboard= (req,res,next)=>{
 const getRanking= async (req,res,next) =>{
     try{
         const users= await User.findAll({
-            attributes: ['id','name',[sequelize.fn('sum', sequelize.col('expenses.amount')),'total_expense']],
-            include: [
-                {
-                    model: Expense,
-                    attributes: []
-                }
-            ],
-            group: ['users.id'],
-            order: [['total_expense',"DESC"]]
+            attributes: ['id','name','totalExpense'],
+            order: [['totalExpense',"DESC"]]
         })
-        
+        console.log(users)
         res.status(200).json(users)
     }catch(err){}
 }
