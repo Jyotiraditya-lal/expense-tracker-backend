@@ -14,7 +14,6 @@ const getRanking= async (req,res,next) =>{
             attributes: ['id','name','totalExpense'],
             order: [['totalExpense',"DESC"]]
         })
-        console.log(users)
         res.status(200).json(users)
     }catch(err){}
 }
