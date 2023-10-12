@@ -19,10 +19,14 @@
                 <input id="password" type="password"  required />
                 <button id="login" type="submit">Login</button>
                 <button id="signup" class="signup" type="reset">Register new user</button>
+                <button id="actions" class="actions">Forgot Password</button>
             </div>
         </form>  
     </main>
     <script>
+        document.getElementById('actions').addEventListener('click',()=>{
+            window.location.href='/password/forgotpassword'
+        })
         const bttn= document.getElementById('login')
         bttn.addEventListener("click", async function login(e){
             
