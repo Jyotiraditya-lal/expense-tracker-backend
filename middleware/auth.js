@@ -9,7 +9,8 @@ const authenticate = (req, res, next) => {
     }
 
     try {
-        const user = jwt.verify(token, '9abr8ytd3554bfndjjw5745bngfj985'); // same secret key
+        require('dotenv').config();
+        const user = jwt.verify(token, process.env.SECRET_KEY); // same secret key
         User.findByPk(user.userId)
             .then((user) => {
                 if (!user) {

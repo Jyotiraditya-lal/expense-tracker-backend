@@ -9,7 +9,8 @@ const getLogin = (req,res,next)=>{
     res.sendFile(path.join(rootDir, 'views', 'login.html'))
 }
 function generateToken(id,name,isPremium){
-    return jwt.sign({userId: id,name: name, isPremium: isPremium },'9abr8ytd3554bfndjjw5745bngfj985') //do not push it to git or disclose it to others when working in development.
+    require('dotenv').config();
+    return jwt.sign({userId: id,name: name, isPremium: isPremium },process.env.SECRET_KEY) //do not push it to git or disclose it to others when working in development.
 }
 
 const postLogin = async (req,res,next)=>{

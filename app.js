@@ -10,6 +10,7 @@ const sequelize=require('./util/database')
 const Expense= require('./models/expense')
 const User = require('./models/user')
 const Order= require('./models/order')
+const PasswordReq= require('./models/password-req')
 
 const app=express()
 
@@ -31,6 +32,9 @@ Expense.belongsTo(User)
 
 User.hasMany(Order)
 Order.belongsTo(User)
+
+User.hasMany(PasswordReq)
+PasswordReq.belongsTo(User)
 
 
 sequelize.sync().then(result=>{
