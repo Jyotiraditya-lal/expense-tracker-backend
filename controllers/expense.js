@@ -44,7 +44,11 @@ exports.getExpenseData = async (req,res,next)=>{
     try{
         const Id= req.user.id
         const expenses= await Expense.findAll({where: {userId: Id}})
-        res.status(201).json({allexpenses: expenses})
+        const  totalExpense= await User.findOne({
+            attributes: ['totalExpense'],
+            where: {id: Id}
+        })
+        res.status(201).json({allexpenses: expenses, totalExpense: totalExpense})
     }catch(err){
         console.log(err)
         res.status(500)

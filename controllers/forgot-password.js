@@ -11,7 +11,8 @@ const getPassword = (req,res,next)=>{
     res.sendFile(path.join(rootDir, 'views', 'forgot-password.html'))
 }
 
-var Id=null;
+
+
 
 const postPassword = async (req,res,next)=>{
     const transaction= await sequelize.transaction()
@@ -35,8 +36,7 @@ const postPassword = async (req,res,next)=>{
                 email: req.body.email
             }
         ]
-
-        Id= uuidv4()
+        const Id= uuidv4()
         const userid= await User.findAll({
             attributes: ['id','name'],
             where: {email: req.body.email}
@@ -65,7 +65,8 @@ const postPassword = async (req,res,next)=>{
             Expense tracker team
             `,params: {
                 name: userid[0].name,
-                link: `http://localhost:3000/password/forgotpassword/${Id}`
+                link: `http://localhost:3000/password/forgotpassword/${Id}`,
+                
             }
         },{
             transaction: transaction
@@ -81,45 +82,45 @@ const postPassword = async (req,res,next)=>{
 }
 
 const getUpdatedPassword= (req,res,next) => {
-    res.sendFile(path.join(rootDir, 'views', 'new-password.html'), {Id})
+    const Id= req.params.id
+    console.log(Id)
+    res.sendFile(path.join(rootDir, 'views', 'new-password.html'))
 }
 
-const postUpdatedPassword = async (req,res,next) => {
-    const transaction= await sequelize.transaction()
-    try{
-        console.log(req.body)
-        const passReq= await PasswordReq.findAll({
-            where: {id: req.body.Id}
-        },{transaction: transaction})
-        console.log(passReq)
+const postUpdatedPassword = async (req, res, next) => {
+    try {
+        const Id = req.params.id;
+        const passReq = await PasswordReq.findOne({
+            where: { id: Id }
+        });
 
-        if(passReq[0].isActive){
-            const user= await User.findAll({
-                where: {id: passReq[0].userid}
-            },{transaction: transaction})
-            console.log(user)
-    
-            bcrypt.hash(req.body.newPassword,10,async (err,hash)=>{
-                await user.update({
-                    password: hash
-                },{transaction: transaction})
-            })
+        console.log(passReq);
+
+        if (passReq.isActive) {
+            const user = await User.findOne({
+                where: { id: passReq.userid }
+            });
+
+            const hash = await bcrypt.hash(req.body.newPassword, 10);
+            await user.update({
+                password: hash
+            });
+        }else{
+            alert('The link is not active anymore. Please generate another')
         }
 
-        await passReq.update({isActive: false},{ transaction: transaction})
-        transaction.commit() 
-        res.status(201).json({success: true, remarks: 'Password Updated successfully'})
-    }catch(err){
-        console.log(err)
-        transaction.rollback()
-        res.status(500).json({success: false, remarks: 'cannot update password'})
+        await passReq.update({ isActive: false });
+        res.status(201).json({ success: true, remarks: 'Password Updated successfully' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ success: false, remarks: 'Cannot update password' });
     }
-} 
+};
+
 
 module.exports={
     getPassword,
     postPassword,
-    Id,
     getUpdatedPassword,
     postUpdatedPassword
 }

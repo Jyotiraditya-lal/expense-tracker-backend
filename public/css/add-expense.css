@@ -131,4 +131,11 @@ li.main-header__item a:hover {
     background-color: #555;
 }
 
+.yearly{
+    text-align: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-weight: bolder;
+    color: #333 ;
+}
+
 

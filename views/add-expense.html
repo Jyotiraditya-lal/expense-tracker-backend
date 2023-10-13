@@ -39,6 +39,7 @@
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         
         <ul id="expenses"></ul>
+        <div id="yearly" class="yearly">Yearly Expense</div>
     </main>
     <script>
         function showPremiumMessage(){
@@ -168,6 +169,11 @@
                 data.allexpenses.forEach(expense => {
                     showExpense(expense);
                 });
+                console.log(data)
+                const p= document.createElement('p')
+                p.textContent= `this is your total yearly expense ${data.totalExpense.totalExpense}`
+                document.getElementById('yearly').appendChild(p)
+
             } else {
                 throw new Error('Something went wrong');
             }
