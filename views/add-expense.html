@@ -36,18 +36,42 @@
         </form>
         <div id="message" class="message"></div>
         <button id="payment" class="payment">Buy Premium</button>
+        <button onclick="download()" id="downloadexpense" class="downloadexpense" style="visibility: hidden;">Download File</button>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         
         <ul id="expenses"></ul>
         <div id="yearly" class="yearly">Yearly Expense</div>
     </main>
     <script>
+
+
+        async function download(){
+            const token = localStorage.getItem('token');
+            try{
+                const response= await fetch('http://localhost:3000/user/download',{headers: {"Authorization" : token}})
+                if(response.status === 201){
+            //the bcakend is essentially sending a download link
+            //  which if we open in browser, the file would download
+                    var a = document.createElement("a");
+                    a.href = response.data.fileUrl;
+                    a.download = 'myexpense.csv';
+                    a.click();
+                } else {
+                    throw new Error(response.data.message)
+                }
+            }catch(err){
+                console.log(err)
+            }
+        }
+
+
         function showPremiumMessage(){
             document.getElementById('payment').style.visibility= "hidden"
             const p=document.createElement('p')
             p.textContent= 'You are a premium user now'
             document.getElementById('message').appendChild(p)
             document.getElementById('leaderboard').style.visibility= 'visible'
+            document.getElementById('downloadexpense').style.visibility='visible'
         }
 
         const paymentBtn = document.getElementById('payment');
@@ -169,10 +193,16 @@
                 data.allexpenses.forEach(expense => {
                     showExpense(expense);
                 });
-                console.log(data)
-                const p= document.createElement('p')
-                p.textContent= `this is your total yearly expense ${data.totalExpense.totalExpense}`
-                document.getElementById('yearly').appendChild(p)
+                
+                if(data.allexpenses.length>0){
+                    const p= document.createElement('p')
+                    p.textContent= `This is your total yearly expense ${data.totalExpense.totalExpense}`
+                    document.getElementById('yearly').appendChild(p)
+                }else{
+                    const p= document.createElement('p')
+                    p.textContent= `No expense yet`
+                    document.getElementById('yearly').appendChild(p)
+                }
 
             } else {
                 throw new Error('Something went wrong');
