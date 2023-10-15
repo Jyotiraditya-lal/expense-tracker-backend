@@ -1,6 +1,6 @@
 const RazorPay= require('razorpay')
 const Order= require('../models/order')
-const signup = require('./sign-up') 
+const signup = require('./user') 
 
 exports.BuyPremium = async (req,res,next) => {
     try{

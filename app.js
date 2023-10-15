@@ -1,7 +1,8 @@
 const bodyParser = require('body-parser')
 const path=require('path')
+const dotenv= require('dotenv')
 const express= require('express')
-const signUp=require('./routes/sign-up')
+const signUp=require('./routes/user')
 const expense= require('./routes/expense')
 const payment=require('./routes/purchase')
 const leaderboard= require('./routes/leaderboard')
@@ -13,6 +14,8 @@ const Order= require('./models/order')
 const PasswordReq= require('./models/password-req')
 
 const app=express()
+
+dotenv.config();
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.json());
