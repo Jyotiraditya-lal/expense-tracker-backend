@@ -39,7 +39,13 @@
         <button onclick="download()" id="downloadexpense" class="downloadexpense" style="visibility: hidden;">Download File</button>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         
-        <ul id="expenses"></ul>
+        <ul id="expenses">
+            <select name="page" id="page">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+            </select>
+        </ul>
         <div id="pagination" class="pagination"></div>
         <div id="yearly" class="yearly">Yearly Expense</div>
     </main>
@@ -164,6 +170,7 @@
         }
         window.location.href='./addexpense'
     })
+    
     function parseJwt (token) {
         var base64Url = token.split('.')[1];
         var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -176,6 +183,8 @@
     window.addEventListener('DOMContentLoaded',  getExpense = async  (page=1) => {
             
         try {
+            const limit= document.getElementById('page').value || 10
+            localStorage.setItem('limit', limit)
             const token= localStorage.getItem('token')
             const decoded=parseJwt(token)
             const isPremium= decoded.isPremium
@@ -185,6 +194,7 @@
             const res = await fetch(`http://localhost:3000/expense/fetchexpenses?page=${page}`,{
                 headers: {
                     'Authorization': token,
+                    'limit': localStorage.getItem('limit'),
                     'Content-Type': 'application/json',
                 }});
             const data = await res.json();
