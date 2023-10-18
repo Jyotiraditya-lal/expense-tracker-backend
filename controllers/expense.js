@@ -44,13 +44,29 @@ exports.postExpense = async (req,res,next) => {
 
 exports.getExpenseData = async (req,res,next)=>{
     try{
+        const page= +req.query.page || 1
         const Id= req.user.id
-        const expenses= await Expense.findAll({where: {userId: Id}})
+        const total = await Expense.count({where: {userId: Id}})
+        const expenses= await Expense.findAll({
+            where: {userId: Id},
+            offset: (page-1)*10,
+            limit: 10
+        })
         const  totalExpense= await User.findOne({
             attributes: ['totalExpense'],
             where: {id: Id}
         })
-        res.status(201).json({allexpenses: expenses, totalExpense: totalExpense})
+        res.status(201).json({
+            allexpenses: expenses, 
+            totalExpense: totalExpense, 
+            currentPage: page,
+            hasNextPage: 10*page < total,
+            nextPage: page + 1,
+            currentPage: page,
+            hasPreviousPage: page > 1,
+            previousPage: page - 1,
+            lastpage: Math.ceil(total/10)
+        })
     }catch(err){
         console.log(err)
         res.status(500)

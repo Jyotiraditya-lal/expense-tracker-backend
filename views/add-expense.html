@@ -40,6 +40,7 @@
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         
         <ul id="expenses"></ul>
+        <div id="pagination" class="pagination"></div>
         <div id="yearly" class="yearly">Yearly Expense</div>
     </main>
     <script>
@@ -172,7 +173,7 @@
         return JSON.parse(jsonPayload);
     }
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.addEventListener('DOMContentLoaded',  getExpense = async  (page=1) => {
             
         try {
             const token= localStorage.getItem('token')
@@ -181,7 +182,7 @@
             if(isPremium){
                 showPremiumMessage()
             }
-            const res = await fetch('http://localhost:3000/expense/fetchexpenses',{
+            const res = await fetch(`http://localhost:3000/expense/fetchexpenses?page=${page}`,{
                 headers: {
                     'Authorization': token,
                     'Content-Type': 'application/json',
@@ -191,6 +192,7 @@
             if (data && data.allexpenses) {
                 data.allexpenses.forEach(expense => {
                     showExpense(expense);
+                    showPagination(data)
                 });
                 
                 if(data.allexpenses.length>0){
@@ -210,6 +212,27 @@
             console.log(err);
         }
     });
+
+    function showPagination(data){
+        if(data.hasPreviousPage){
+            const prevBttn= document.createElement('button')
+            prevBttn.textContent= data.previousPage
+            prevBttn.addEventListener('click', ()=>{getExpense(data.previousPage)})
+            document.getElementById('pagination').appendChild(prevBttn)
+        }
+
+        const currBttn= document.createElement('button')
+        currBttn.textContent= data.currentPage
+        currBttn.addEventListener('click', ()=>{getExpense(data.currentPage)})
+        document.getElementById('pagination').appendChild(currBttn)
+
+        if(data.hasNextPage){
+            const nextBttn= document.createElement('button')
+            nextBttn.textContent= data.nextPage
+            nextBttn.addEventListener('click', ()=>{getExpense(data.nextPage)})
+            document.getElementById('pagination').appendChild(nextBttn)
+        }
+    }
 
     function showExpense(expense) {
         const ul = document.getElementById('expenses');

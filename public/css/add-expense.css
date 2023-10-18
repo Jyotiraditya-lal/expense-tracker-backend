@@ -151,4 +151,13 @@ li.main-header__item a:hover {
     background-color: #555;
 }
 
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
 
