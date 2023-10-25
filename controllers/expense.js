@@ -44,7 +44,7 @@ exports.postExpense = async (req,res,next) => {
 
 exports.getExpenseData = async (req,res,next)=>{
     try{
-        const limit= +req.headers['limit']
+        const limit= +req.query.limit
         console.log(limit)
         const page= +req.query.page || 1
         const Id= req.user.id

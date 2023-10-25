@@ -2,6 +2,9 @@ const bodyParser = require('body-parser')
 const path=require('path')
 const dotenv= require('dotenv')
 const express= require('express')
+const helmet= require('helmet')
+const compression= require('compression')
+const morgan= require('morgan')
 const signUp=require('./routes/user')
 const expense= require('./routes/expense')
 const payment=require('./routes/purchase')
@@ -13,9 +16,14 @@ const User = require('./models/user')
 const Order= require('./models/order')
 const PasswordReq= require('./models/password-req')
 
+
 const app=express()
 
 dotenv.config();
+
+app.use(helmet())
+app.use(compression())
+app.use(morgan('combined'))
 
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.json());
